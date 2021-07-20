@@ -1,0 +1,3 @@
+rootProject.name = "AdrianLib"
+include ':app'
+include ':CommLib'
