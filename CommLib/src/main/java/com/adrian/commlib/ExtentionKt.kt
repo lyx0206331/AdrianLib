@@ -8,6 +8,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.IntDef
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -106,7 +107,7 @@ fun Context.getVersionCode(): Int = packageManager.getPackageInfo(packageName, 0
  */
 fun Context.getVersionName(): String = packageManager.getPackageInfo(packageName, 0).versionName
 
-inline fun Context.getColor1(@ColorRes colorId: Int) = this.resources.getColor(colorId)
+fun Context.getColor1(@ColorRes colorId: Int) = ContextCompat.getColor(this, colorId)
 
 /**
  * 格式化日期字符串
@@ -124,7 +125,7 @@ fun Date.formatDateString(
 /**
  * 字节数组转换为浮点型(大端模式)
  */
-fun ByteArray.read2FloatBE(offset: Int = 0) =
+fun ByteArray?.read2FloatBE(offset: Int = 0) =
     if (this == null || this.size < offset + 4) throw IllegalArgumentException("传入参数不正确")
     else java.lang.Float.intBitsToFloat(
         0xff000000.and(this[offset].toInt().shl(24).toLong())
@@ -136,7 +137,7 @@ fun ByteArray.read2FloatBE(offset: Int = 0) =
 /**
  * 字节数组转换为浮点型(小端模式)
  */
-fun ByteArray.read2FloatLE(offset: Int = 0) =
+fun ByteArray?.read2FloatLE(offset: Int = 0) =
     if (this == null || this.size < offset + 4) throw IllegalArgumentException("传入参数不正确")
     else java.lang.Float.intBitsToFloat(
         0xff000000.and(this[offset + 3].toInt().shl(24).toLong())
@@ -158,7 +159,7 @@ fun Short.toBytesBE() = byteArrayOf(this.toInt().shr(8).toByte(), this.toByte())
 /**
  * 字节数组转换成Short(大端)
  */
-fun ByteArray.read2ShortBE() =
+fun ByteArray?.read2ShortBE() =
     if (this == null) throw IllegalArgumentException("传入参数不正确")
     else {
         val bytes = when (this.size) {
@@ -172,7 +173,7 @@ fun ByteArray.read2ShortBE() =
 /**
  * 字节数组转换成Short(大端)
  */
-fun ByteArray.read2UShortBE() =
+fun ByteArray?.read2UShortBE() =
     if (this == null) throw IllegalArgumentException("传入参数不正确")
     else {
         val bytes = when (this.size) {
@@ -186,7 +187,7 @@ fun ByteArray.read2UShortBE() =
 /**
  * 字节数组转换成Short(小端)
  */
-fun ByteArray.read2ShortLE() =
+fun ByteArray?.read2ShortLE() =
     if (this == null) throw IllegalArgumentException("传入参数不正确")
     else {
         val bytes = when (this.size) {
@@ -200,7 +201,7 @@ fun ByteArray.read2ShortLE() =
 /**
  * 字节数组转换为整型(大端模式)
  */
-fun ByteArray.read2IntBE(offset: Int = 0) =
+fun ByteArray?.read2IntBE(offset: Int = 0) =
     if (this == null) throw IllegalArgumentException("传入参数不正确")
     else {
         val arr = when (this.size) {
@@ -219,7 +220,7 @@ fun ByteArray.read2IntBE(offset: Int = 0) =
 /**
  * 字节数组转换为整型(小端模式)
  */
-fun ByteArray.read2IntLE(offset: Int = 0) =
+fun ByteArray?.read2IntLE(offset: Int = 0) =
     if (this == null) throw IllegalArgumentException("传入参数不正确")
     else {
         val arr = when (this.size) {
@@ -238,7 +239,7 @@ fun ByteArray.read2IntLE(offset: Int = 0) =
 /**
  * 字节数组转换为整型(大端模式)
  */
-fun ByteArray.read2LongBE(offset: Int = 0) =
+fun ByteArray?.read2LongBE(offset: Int = 0) =
     if (this == null) throw IllegalArgumentException("传入参数不正确")
     else {
         val arr = if (this.size >= 8) {
@@ -268,7 +269,7 @@ fun ByteArray.read2LongBE(offset: Int = 0) =
 /**
  * 字节数组转换为整型(小端模式)
  */
-fun ByteArray.read2LongLE(offset: Int = 0) =
+fun ByteArray?.read2LongLE(offset: Int = 0) =
     if (this == null) throw IllegalArgumentException("传入参数不正确")
     else {
         val arr = if (this.size >= 8) {
@@ -325,7 +326,7 @@ fun ByteArray?.formatHexString(seperator: String = ""): String? =
 fun String?.hexString2Bytes(): ByteArray? =
     if (this.isNullOrEmpty() || !this.isHexString()) null
     else {
-        val src = this.trim().toUpperCase()
+        val src = this.trim().uppercase(Locale.getDefault())
         val len = src.length / 2
         val result = ByteArray(len) { 0 }
         val hexChars = src.toCharArray()
@@ -351,7 +352,7 @@ fun String?.str2BinStr(): String? =
         val strChar = this.toCharArray()
         var result = ""
         strChar.forEach {
-            result += "${Integer.toBinaryString(it.toInt())} "
+            result += "${Integer.toBinaryString(it.code)} "
         }
         result.trim()
     }
@@ -389,23 +390,21 @@ val CHINESE_UNICODE = "[\\u4e00-\\u9fa5]"
 /**
  * 是否包含汉字
  */
-fun String?.containtChinese() = Pattern.compile(CHINESE_UNICODE).matcher(this).find()
+fun String?.containtChinese() = if (this.isNullOrEmpty()) false else Pattern.compile(CHINESE_UNICODE).matcher(this).find()
 
 /**
  * 是否全是汉字
  */
-fun String?.isAllChinese() = Pattern.compile(CHINESE_UNICODE).matcher(this).matches()
+fun String?.isAllChinese() = if (this.isNullOrEmpty()) false else Pattern.compile(CHINESE_UNICODE).matcher(this).matches()
 
 /**
  * 是否只包含字母数字及汉字
  */
-fun String.isNumOrCharOrChinese() = this.matches(Regex("^[a-z0-9A-Z\\u4e00-\\u9fa5]+$"))
+fun String?.isNumOrCharOrChinese() = if (this.isNullOrEmpty()) false else this.matches(Regex("^[a-z0-9A-Z\\u4e00-\\u9fa5]+$"))
 
 fun File.createFile(delOld: Boolean = false): File =
     if (!exists() || !isFile) {
-        File(this.parent).also {
-            it.mkdirs()
-        }
+        File(this.parent!!).mkdirs()
         createNewFile()
         this
     } else if (delOld) {
