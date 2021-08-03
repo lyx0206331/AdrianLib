@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.ColorRes
+import androidx.annotation.IntDef
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import java.io.File
@@ -432,3 +433,55 @@ fun File.getFilesByTimeRange(from: Long = 0, to: Long = System.currentTimeMillis
 @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
 fun File.hasAvailableSpace(cacheByteCount: Long = 50 * 1024 * 1024L): Boolean =
     usableSpace > cacheByteCount
+
+//写入文件类型为字符串
+const val TYPE_WRITE_STRING = 0
+//写入文件类型为字节
+const val TYPE_WRITE_BYTE = 1
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(TYPE_WRITE_STRING, TYPE_WRITE_BYTE)
+annotation class TypeWrite2File
+
+@Synchronized
+fun File.write(data: ByteArray, @TypeWrite2File type: Int = TYPE_WRITE_STRING) {
+    when(type) {
+        TYPE_WRITE_STRING -> {
+            val d = data.formatHexString(" ")
+//            "LOG".logE("size:${data.size},format:${d}")
+            this.createFile().appendText("$d\n")
+        }
+        TYPE_WRITE_BYTE -> {
+            this.createFile().appendBytes(data)
+        }
+    }
+}
+
+/**
+ * 获取字节的低半字节数据
+ *
+ * @return
+ */
+internal fun Byte.getLowHalfByte(): Int = this.toInt().and(0x0000000F)
+
+/**
+ * 获取字节的高半字节数据
+ *
+ * @return
+ */
+internal fun Byte.getHighHalfByte(): Int = this.toInt().and(0x000000F0).shr(4)
+
+/**
+ * 获取字节最后一位
+ *
+ * @return
+ */
+internal fun Byte.getLastBit(): Int = this.toInt().and(0x00000001)
+
+/**
+ * 判断是否MAC地址字符串
+ */
+fun String?.isMacString() =
+    if (this.isNullOrEmpty()) false
+    else {
+        Pattern.compile("[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}").matcher(this).matches()
+    }
