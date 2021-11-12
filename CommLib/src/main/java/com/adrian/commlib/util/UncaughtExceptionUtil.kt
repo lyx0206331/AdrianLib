@@ -1,4 +1,4 @@
-package com.adrian.commlib
+package com.adrian.commlib.util
 
 import android.content.Context
 import android.os.Environment

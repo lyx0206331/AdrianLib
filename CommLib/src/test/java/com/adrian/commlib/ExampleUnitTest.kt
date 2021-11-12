@@ -1,6 +1,7 @@
 package com.adrian.commlib
 
-import org.junit.Assert
+import com.adrian.commlib.util.getSystemModel
+import com.adrian.commlib.util.isMacString
 import org.junit.Test
 
 import org.junit.Assert.*

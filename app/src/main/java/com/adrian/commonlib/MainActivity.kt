@@ -2,8 +2,8 @@ package com.adrian.commonlib
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.adrian.commlib.getDeviceBrand
-import com.adrian.commlib.getSystemModel
+import com.adrian.commlib.util.getDeviceBrand
+import com.adrian.commlib.util.getSystemModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

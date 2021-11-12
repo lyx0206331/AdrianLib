@@ -1,8 +1,9 @@
-package com.adrian.commlib
+package com.adrian.commlib.util
 
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.adrian.commlib.BuildConfig
 import org.jetbrains.annotations.NotNull
 
 //  ┏┓　　　┏┓

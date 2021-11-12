@@ -1,4 +1,4 @@
-package com.adrian.commlib
+package com.adrian.commlib.util
 
 import android.app.Activity
 import android.content.Intent

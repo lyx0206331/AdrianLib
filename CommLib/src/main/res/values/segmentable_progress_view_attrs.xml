@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SegmentableProgressView">
+        <attr name="segment_count" format="integer" />
+        <attr name="segment_index" format="integer" />
+        <attr name="segment_colors_array" format="reference" />
+    </declare-styleable>
+</resources>

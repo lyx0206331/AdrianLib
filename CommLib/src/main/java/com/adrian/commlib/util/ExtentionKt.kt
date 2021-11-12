@@ -1,4 +1,4 @@
-package com.adrian.commlib
+package com.adrian.commlib.util
 
 import android.content.Context
 import android.os.Build
@@ -9,6 +9,7 @@ import androidx.annotation.IntDef
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import com.adrian.commlib.BuildConfig
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*

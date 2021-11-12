@@ -1,4 +1,4 @@
-package com.adrian.commlib
+package com.adrian.commlib.util
 
 import androidx.annotation.IntDef
 import io.netty.buffer.Unpooled

@@ -1,4 +1,4 @@
-package com.adrian.commlib
+package com.adrian.commlib.util
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
