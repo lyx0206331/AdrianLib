@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="SegmentableProgressView">
-        <attr name="segment_count" format="integer" />
-        <attr name="segment_index" format="integer" />
-        <attr name="segment_colors_array" format="reference" />
+    <declare-styleable name="SegmentableStepsView">
+        <attr name="step_corner_radius" format="dimension|reference" />
+        <attr name="max_steps" format="integer" />
+        <attr name="step_index" format="integer" />
+        <attr name="step_background_color" format="color|reference"/>
+        <attr name="step_colors_array" format="reference" />
     </declare-styleable>
 </resources>
