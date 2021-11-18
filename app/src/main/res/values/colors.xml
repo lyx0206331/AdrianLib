@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <array name="segmentable_step_colors">
+        <item>#FFBB86FC</item>
+        <item>#FF6200EE</item>
+        <item>#FF03DAC5</item>
+        <item>#FF3700B3</item>
+        <item>#FF018786</item>
+    </array>
 </resources>

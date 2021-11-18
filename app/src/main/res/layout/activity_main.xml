@@ -31,12 +31,15 @@
 
     <com.adrian.commlib.view.SegmentableStepsView
         android:id="@+id/segmentableStepsView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginTop="10dp"
         app:max_steps="8"
         app:step_index="3"
+        app:step_style="line_vertical"
         app:step_corner_radius="15dp"
+        app:step_stroke_width="40dp"
+        app:step_colors_array="@array/segmentable_step_colors"
         app:layout_constraintTop_toBottomOf="@id/progressbar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
