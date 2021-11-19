@@ -34,14 +34,37 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="10dp"
+        android:paddingStart="5dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="15dp"
+        android:background="@color/black"
         app:max_steps="8"
         app:step_index="3"
-        app:step_style="line_vertical"
+        app:step_style="ring"
         app:step_corner_radius="15dp"
-        app:step_stroke_width="40dp"
+        app:step_stroke_width="30dp"
+        app:step_outside_radius="50dp"
         app:step_colors_array="@array/segmentable_step_colors"
         app:layout_constraintTop_toBottomOf="@id/progressbar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/btnSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="切换"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressbar" />
+
+    <Button
+        android:id="@+id/btnIncrease"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="0"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSwitch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

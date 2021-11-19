@@ -14,5 +14,7 @@
             <enum name="circle" value="2" />
             <enum name="arc" value="3" />
         </attr>
+        <attr name="step_outside_radius" format="dimension|reference" />
+        <attr name="step_ring_center_color" format="color|reference" />
     </declare-styleable>
 </resources>
