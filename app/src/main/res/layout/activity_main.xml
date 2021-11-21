@@ -44,7 +44,7 @@
         app:step_style="ring"
         app:step_corner_radius="15dp"
         app:step_stroke_width="30dp"
-        app:step_outside_radius="50dp"
+        app:step_outside_radius="90dp"
         app:step_colors_array="@array/segmentable_step_colors"
         app:layout_constraintTop_toBottomOf="@id/progressbar"
         app:layout_constraintLeft_toLeftOf="parent" />

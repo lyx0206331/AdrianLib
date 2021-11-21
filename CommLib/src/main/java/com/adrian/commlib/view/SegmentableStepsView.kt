@@ -7,7 +7,6 @@ import android.view.View
 import androidx.annotation.IntDef
 import androidx.annotation.Nullable
 import com.adrian.commlib.R
-import com.adrian.commlib.util.logE
 import kotlin.math.max
 import kotlin.math.min
 
@@ -58,11 +57,11 @@ class SegmentableStepsView @JvmOverloads constructor(
         // 圆形
         const val STYLE_CIRCLE = 3
 
-        // 弧形
-        const val STYLE_ARC = 4
+        // 扇形
+        const val STYLE_SECTOR = 4
 
         @Retention(AnnotationRetention.SOURCE)
-        @IntDef(STYLE_RING, STYLE_CIRCLE, STYLE_LINE_HORIZONTAL, STYLE_LINE_VERTICAL, STYLE_ARC)
+        @IntDef(STYLE_RING, STYLE_CIRCLE, STYLE_LINE_HORIZONTAL, STYLE_LINE_VERTICAL, STYLE_SECTOR)
         annotation class StepStyle
     }
 
@@ -113,12 +112,11 @@ class SegmentableStepsView @JvmOverloads constructor(
     var stepOutsideRadius = 10f
         set(value) {
             field = value
-            stepInsideRadius = if (field > stepStrokeWidth) field - stepStrokeWidth else field
             invalidate()
         }
 
     //环形内半径
-    private var stepInsideRadius = 5f
+//    private var stepInsideRadius = 5f
 
     //宽度
     var stepStrokeWidth = 5f
@@ -245,6 +243,8 @@ class SegmentableStepsView @JvmOverloads constructor(
 //            STYLE_LINE_VERTICAL -> height.toFloat() - paddingBottom
 //            else -> 0f
 //        }
+        val stepInsideRadius = if (stepOutsideRadius > stepStrokeWidth) stepOutsideRadius - stepStrokeWidth else stepOutsideRadius
+        val sweepAngle = 360f/maxSteps
         when (stepStyle) {
             STYLE_LINE_HORIZONTAL, STYLE_LINE_VERTICAL -> {
                 canvas?.drawRect(
@@ -313,7 +313,7 @@ class SegmentableStepsView @JvmOverloads constructor(
                         val cx = paddingStart + stepOutsideRadius
                         val cy = paddingTop + stepOutsideRadius
                         canvas?.drawArc(paddingStart.toFloat(), paddingTop.toFloat(), paddingStart+stepOutsideRadius*2, paddingTop+stepOutsideRadius*2,
-                            (index - 1f) / maxSteps * 360 - 90, 1f*index/maxSteps*360 - 90, true, progressPaint.also {
+                            (index - 1f) / maxSteps * 360 - 90, sweepAngle, true, progressPaint.also {
                                 it.color = color
                                 it.strokeWidth = stepStrokeWidth
                             })
