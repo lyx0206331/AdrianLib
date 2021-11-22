@@ -40,12 +40,14 @@
         android:paddingBottom="15dp"
         android:background="@color/black"
         app:max_steps="8"
-        app:step_index="3"
+        app:step_index="1"
         app:step_style="ring"
-        app:step_corner_radius="15dp"
         app:step_stroke_width="30dp"
         app:step_outside_radius="90dp"
+        app:step_ring_center_color="#00f000"
+        app:step_background_color="#8888"
         app:step_colors_array="@array/segmentable_step_colors"
+        app:step_ring_center_image="@mipmap/ic_launcher"
         app:layout_constraintTop_toBottomOf="@id/progressbar"
         app:layout_constraintLeft_toLeftOf="parent" />
 

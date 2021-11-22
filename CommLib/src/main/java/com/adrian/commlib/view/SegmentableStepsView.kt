@@ -2,11 +2,18 @@ package com.adrian.commlib.view
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.IntDef
 import androidx.annotation.Nullable
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.adrian.commlib.R
+import com.adrian.commlib.util.ImageUtil
+import com.adrian.commlib.util.ImageUtil.toBitmap
+import com.adrian.commlib.util.orDefault
 import kotlin.math.max
 import kotlin.math.min
 
@@ -54,14 +61,11 @@ class SegmentableStepsView @JvmOverloads constructor(
         // 竖线
         const val STYLE_LINE_VERTICAL = 2
 
-        // 圆形
+        // 扇形
         const val STYLE_CIRCLE = 3
 
-        // 扇形
-        const val STYLE_SECTOR = 4
-
         @Retention(AnnotationRetention.SOURCE)
-        @IntDef(STYLE_RING, STYLE_CIRCLE, STYLE_LINE_HORIZONTAL, STYLE_LINE_VERTICAL, STYLE_SECTOR)
+        @IntDef(STYLE_RING, STYLE_LINE_HORIZONTAL, STYLE_LINE_VERTICAL, STYLE_CIRCLE)
         annotation class StepStyle
     }
 
@@ -95,39 +99,58 @@ class SegmentableStepsView @JvmOverloads constructor(
         }
 
     //圆环时中间部分颜色
-    var stepRingCenterColor = Color.WHITE
+    var stepRingCenterColor = Color.TRANSPARENT
         set(value) {
             field = value
             invalidate()
         }
 
     //步骤起止片段圆角度数
-    var stepCornerRadius = 5f
-        set(value) {
-            field = value
-            invalidate()
-        }
+//    var stepCornerRadius = 5f
+//        set(value) {
+//            field = value
+//            invalidate()
+//        }
 
     //环形或者圆形时外半径
     var stepOutsideRadius = 10f
         set(value) {
             field = value
+            stepInsideRadius =
+                if (stepOutsideRadius > stepStrokeWidth) stepOutsideRadius - stepStrokeWidth else stepOutsideRadius
             invalidate()
         }
 
     //环形内半径
-//    private var stepInsideRadius = 5f
+    private var stepInsideRadius = 5f
 
     //宽度
     var stepStrokeWidth = 5f
         set(value) {
             field = if (value > 0) value else 1f
+            stepInsideRadius =
+                if (stepOutsideRadius > stepStrokeWidth) stepOutsideRadius - stepStrokeWidth else stepOutsideRadius
             invalidate()
         }
 
     //步骤样式:环形、水平、垂直、圆形、扇形
     @StepStyle
     var stepStyle = STYLE_LINE_HORIZONTAL
+        set(value) {
+            field = value
+            progressPaint.style = if (field == STYLE_RING) Paint.Style.STROKE else Paint.Style.FILL
+            invalidate()
+        }
+
+    //环状时居中图片
+    var ringCenterImage: Drawable? = null
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    //环状时居中文字
+    var ringCenterText: String? = null
         set(value) {
             field = value
             invalidate()
@@ -141,14 +164,18 @@ class SegmentableStepsView @JvmOverloads constructor(
 
     init {
         context.obtainStyledAttributes(attrs, R.styleable.SegmentableStepsView)?.also {
-            stepCornerRadius =
-                it.getDimension(R.styleable.SegmentableStepsView_step_corner_radius, 10f)
+//            stepCornerRadius =
+//                it.getDimension(R.styleable.SegmentableStepsView_step_corner_radius, 10f)
             maxSteps = it.getInt(R.styleable.SegmentableStepsView_max_steps, 5)
             stepBgColor =
                 it.getColor(R.styleable.SegmentableStepsView_step_background_color, Color.GRAY)
             stepRingCenterColor =
-                it.getColor(R.styleable.SegmentableStepsView_step_ring_center_color, Color.WHITE)
-            stepOutsideRadius = it.getDimension(R.styleable.SegmentableStepsView_step_outside_radius, 10f)
+                it.getColor(
+                    R.styleable.SegmentableStepsView_step_ring_center_color,
+                    Color.TRANSPARENT
+                )
+            stepOutsideRadius =
+                it.getDimension(R.styleable.SegmentableStepsView_step_outside_radius, 10f)
             stepIndex = it.getInt(R.styleable.SegmentableStepsView_step_index, 3)
             it.getResourceId(R.styleable.SegmentableStepsView_step_colors_array, 0)
                 .takeIf { arrayId ->
@@ -165,6 +192,9 @@ class SegmentableStepsView @JvmOverloads constructor(
             stepStyle = it.getInt(R.styleable.SegmentableStepsView_step_style, STYLE_RING)
             stepStrokeWidth =
                 it.getDimension(R.styleable.SegmentableStepsView_step_stroke_width, 5f)
+            ringCenterImage =
+                it.getDrawable(R.styleable.SegmentableStepsView_step_ring_center_image)
+            ringCenterText = it.getString(R.styleable.SegmentableStepsView_step_ring_center_text)
         }.recycle()
     }
 
@@ -221,30 +251,9 @@ class SegmentableStepsView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-//        val bl = when (stepStyle) {
-//            STYLE_LINE_HORIZONTAL -> paddingLeft
-//            STYLE_LINE_VERTICAL -> paddingLeft
-//            STYLE_RING -> paddingStart + stepOutsideRadius
-//            else -> 0f
-//        }
-//        val bt = when (stepStyle) {
-//            STYLE_LINE_HORIZONTAL -> paddingTop
-//            STYLE_LINE_VERTICAL -> paddingTop
-//            STYLE_RING -> paddingTop + stepOutsideRadius
-//            else -> 0f
-//        }
-//        val br = when (stepStyle) {
-//            STYLE_LINE_HORIZONTAL -> width.toFloat() - paddingRight
-//            STYLE_LINE_VERTICAL -> stepStrokeWidth + paddingLeft
-//            else -> 0f
-//        }
-//        val bb = when (stepStyle) {
-//            STYLE_LINE_HORIZONTAL -> stepStrokeWidth + paddingTop
-//            STYLE_LINE_VERTICAL -> height.toFloat() - paddingBottom
-//            else -> 0f
-//        }
-        val stepInsideRadius = if (stepOutsideRadius > stepStrokeWidth) stepOutsideRadius - stepStrokeWidth else stepOutsideRadius
-        val sweepAngle = 360f/maxSteps
+//        stepInsideRadius =
+//            if (stepOutsideRadius > stepStrokeWidth) stepOutsideRadius - stepStrokeWidth else stepOutsideRadius
+        val sweepAngle = 360f / maxSteps
         when (stepStyle) {
             STYLE_LINE_HORIZONTAL, STYLE_LINE_VERTICAL -> {
                 canvas?.drawRect(
@@ -253,20 +262,55 @@ class SegmentableStepsView @JvmOverloads constructor(
                     if (stepStyle == STYLE_LINE_HORIZONTAL) width.toFloat() - paddingRight else stepStrokeWidth + paddingLeft,
                     if (stepStyle == STYLE_LINE_HORIZONTAL) stepStrokeWidth + paddingTop else height.toFloat() - paddingBottom,
                     progressPaint.also {
+                        it.style = Paint.Style.FILL
                         it.color = stepBgColor
                         it.strokeWidth = stepStrokeWidth
                     })
+            }
+            STYLE_RING -> {
+                canvas?.drawArc(paddingStart + stepStrokeWidth / 2,
+                    paddingTop + stepStrokeWidth / 2,
+                    paddingStart + stepOutsideRadius * 2 - stepStrokeWidth / 2,
+                    paddingTop + stepOutsideRadius * 2 - stepStrokeWidth / 2,
+                    0f,
+                    360f,
+                    false,
+                    progressPaint.also {
+                        it.style = Paint.Style.STROKE
+                        it.color = stepBgColor
+                        it.strokeWidth = stepStrokeWidth
+                    })
+                val cx = paddingStart + stepOutsideRadius
+                val cy = paddingTop + stepOutsideRadius
+                canvas?.drawCircle(
+                    cx, cy, stepInsideRadius, progressPaint.also {
+                        it.style = Paint.Style.FILL
+                        it.color = stepRingCenterColor
+                    }
+                )
+                ringCenterImage?.let { img ->
+                    canvas?.drawBitmap(
+                        img.toBitmap(), Rect(0, 0, img.intrinsicWidth, img.intrinsicHeight),
+                        Rect(
+                            paddingStart + stepStrokeWidth.toInt(),
+                            paddingTop + stepStrokeWidth.toInt(),
+                            paddingStart + stepOutsideRadius.toInt() + stepInsideRadius.toInt(),
+                            paddingTop + stepOutsideRadius.toInt() + stepInsideRadius.toInt()
+                        ), progressPaint.apply {
+                            color = Color.WHITE
+                        }
+                    )
+                }
+
             }
             else -> {
                 val cx = paddingStart + stepOutsideRadius
                 val cy = paddingTop + stepOutsideRadius
                 canvas?.drawCircle(
                     cx, cy, stepOutsideRadius, progressPaint.also {
+                        it.style = Paint.Style.FILL
                         it.color = stepBgColor
                     })
-                canvas?.drawCircle(
-                    cx, cy, stepInsideRadius, progressPaint.also { it.color = stepRingCenterColor }
-                )
             }
         }
 
@@ -280,26 +324,6 @@ class SegmentableStepsView @JvmOverloads constructor(
                 } else {
                     colorsArray.last()
                 }
-//                val l = when (stepStyle) {
-//                    STYLE_LINE_HORIZONTAL -> (index - 1f) / maxSteps * validW + paddingLeft
-//                    STYLE_LINE_VERTICAL -> paddingLeft
-//                    else -> 0f
-//                }
-//                val t = when (stepStyle) {
-//                    STYLE_LINE_HORIZONTAL -> paddingTop
-//                    STYLE_LINE_VERTICAL -> validH * (maxSteps - index) / maxSteps + paddingTop
-//                    else -> 0f
-//                }
-//                val r = when (stepStyle) {
-//                    STYLE_LINE_HORIZONTAL -> 1f * index / maxSteps * validW + paddingLeft
-//                    STYLE_LINE_VERTICAL -> stepStrokeWidth + paddingLeft
-//                    else -> 0f
-//                }
-//                val b = when (stepStyle) {
-//                    STYLE_LINE_HORIZONTAL -> stepStrokeWidth + paddingTop
-//                    STYLE_LINE_VERTICAL -> validH * (maxSteps - index + 1) / maxSteps + paddingTop
-//                    else -> 0f
-//                }
                 when (stepStyle) {
                     STYLE_LINE_HORIZONTAL, STYLE_LINE_VERTICAL -> {
                         canvas?.drawRect(
@@ -307,25 +331,50 @@ class SegmentableStepsView @JvmOverloads constructor(
                             if (stepStyle == STYLE_LINE_HORIZONTAL) paddingTop.toFloat() else validH * (maxSteps - index) / maxSteps + paddingTop,
                             if (stepStyle == STYLE_LINE_HORIZONTAL) 1f * index / maxSteps * validW + paddingLeft else stepStrokeWidth + paddingLeft,
                             if (stepStyle == STYLE_LINE_HORIZONTAL) stepStrokeWidth + paddingTop else validH * (maxSteps - index + 1) / maxSteps + paddingTop,
-                            progressPaint.also { it.color = color })
+                            progressPaint.also {
+                                it.style = Paint.Style.FILL
+                                it.color = color
+                            })
                     }
-                    else -> {
-                        val cx = paddingStart + stepOutsideRadius
-                        val cy = paddingTop + stepOutsideRadius
-                        canvas?.drawArc(paddingStart.toFloat(), paddingTop.toFloat(), paddingStart+stepOutsideRadius*2, paddingTop+stepOutsideRadius*2,
-                            (index - 1f) / maxSteps * 360 - 90, sweepAngle, true, progressPaint.also {
+                    STYLE_RING -> {
+                        val halfStroke = stepStrokeWidth / 2
+                        canvas?.drawArc(paddingStart + halfStroke,
+                            paddingTop + halfStroke,
+                            paddingStart + stepOutsideRadius * 2 - halfStroke,
+                            paddingTop + stepOutsideRadius * 2 - halfStroke,
+                            (index - 1f) / maxSteps * 360 - 90,
+                            sweepAngle,
+                            false,
+                            progressPaint.also {
+                                it.style = Paint.Style.STROKE
                                 it.color = color
                                 it.strokeWidth = stepStrokeWidth
                             })
-                        canvas?.drawCircle(
-                            cx,
-                            cy,
-                            stepInsideRadius,
+                    }
+                    else -> {
+//                        val cx = paddingStart + stepOutsideRadius
+//                        val cy = paddingTop + stepOutsideRadius
+                        canvas?.drawArc(paddingStart.toFloat(),
+                            paddingTop.toFloat(),
+                            paddingStart + stepOutsideRadius * 2,
+                            paddingTop + stepOutsideRadius * 2,
+                            (index - 1f) / maxSteps * 360 - 90,
+                            sweepAngle,
+                            true,
                             progressPaint.also {
-                                it.color = stepRingCenterColor
-                                it.strokeWidth = 0f
-                            }
-                        )
+                                it.style = Paint.Style.FILL
+                                it.color = color
+                                it.strokeWidth = stepStrokeWidth
+                            })
+//                        canvas?.drawCircle(
+//                            cx,
+//                            cy,
+//                            stepInsideRadius,
+//                            progressPaint.also {
+//                                it.color = stepRingCenterColor
+//                                it.strokeWidth = 0f
+//                            }
+//                        )
                     }
                 }
 

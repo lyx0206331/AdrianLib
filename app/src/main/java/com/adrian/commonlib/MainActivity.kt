@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
             segmentableStepsView.stepStyle = when (segmentableStepsView.stepStyle) {
                 SegmentableStepsView.STYLE_LINE_HORIZONTAL -> SegmentableStepsView.STYLE_LINE_VERTICAL
                 SegmentableStepsView.STYLE_LINE_VERTICAL -> SegmentableStepsView.STYLE_RING
+                SegmentableStepsView.STYLE_RING -> SegmentableStepsView.STYLE_CIRCLE
                 else -> SegmentableStepsView.STYLE_LINE_HORIZONTAL
             }
         }

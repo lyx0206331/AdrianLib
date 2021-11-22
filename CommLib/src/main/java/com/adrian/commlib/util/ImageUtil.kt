@@ -3,7 +3,10 @@ package com.adrian.commlib.util
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.PixelFormat
+import android.graphics.drawable.Drawable
 import android.view.View
+import androidx.core.graphics.drawable.toBitmap
 import java.io.File
 
 //                       _ooOoo_
@@ -83,5 +86,13 @@ object ImageUtil {
             v.destroyDrawingCache()
             file.absolutePath
         }
+    }
+
+    fun Drawable.toBitmap(): Bitmap {
+        val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, if (opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
+        setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        draw(Canvas(bitmap))
+        return bitmap
+//        return toBitmap(intrinsicWidth, intrinsicHeight, if (opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
     }
 }
