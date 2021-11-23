@@ -2,18 +2,13 @@ package com.adrian.commlib.view
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.IntDef
 import androidx.annotation.Nullable
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.adrian.commlib.R
-import com.adrian.commlib.util.ImageUtil
-import com.adrian.commlib.util.ImageUtil.toBitmap
-import com.adrian.commlib.util.orDefault
+import com.adrian.commlib.util.logE
 import kotlin.math.max
 import kotlin.math.min
 
@@ -67,6 +62,19 @@ class SegmentableStepsView @JvmOverloads constructor(
         @Retention(AnnotationRetention.SOURCE)
         @IntDef(STYLE_RING, STYLE_LINE_HORIZONTAL, STYLE_LINE_VERTICAL, STYLE_CIRCLE)
         annotation class StepStyle
+
+        //常规字体
+        const val TEXT_STYLE_NORMAL = Typeface.NORMAL
+        //粗体
+        const val TEXT_STYLE_BOLD = Typeface.BOLD
+        //斜体
+        const val TEXT_STYLE_ITALIC = Typeface.ITALIC
+        //加粗斜体
+        const val TEXT_STYLE_BOLD_ITALIC = Typeface.BOLD_ITALIC
+
+        @Retention(AnnotationRetention.SOURCE)
+        @IntDef(TEXT_STYLE_NORMAL, TEXT_STYLE_BOLD, TEXT_STYLE_ITALIC, TEXT_STYLE_BOLD_ITALIC)
+        annotation class TextStyle
     }
 
     //最大步骤数
@@ -80,6 +88,7 @@ class SegmentableStepsView @JvmOverloads constructor(
     var stepIndex = 3
         set(value) {
             field = if (value < 0) 0 else value
+            stepChangeListener?.invoke(field)
             invalidate()
         }
 
@@ -156,11 +165,52 @@ class SegmentableStepsView @JvmOverloads constructor(
             invalidate()
         }
 
+    //环状时居中文字大小
+    var ringCenterTextSize = 20f
+        set(value) {
+            field = value
+            textPaint.textSize = field
+            invalidate()
+        }
+
+    //环状时居中文字颜色
+    var ringCenterTextColor = Color.BLACK
+        set(value) {
+            field = value
+            textPaint.color = field
+            invalidate()
+        }
+
+    //环状时居中文字样式
+    @TextStyle
+    var ringCenterTextStyle = TEXT_STYLE_NORMAL
+        set(value) {
+            field = value
+            textPaint.isFakeBoldText = true
+            invalidate()
+        }
+
+    //环状时是否自动调节居中文本大小
+    var ringAutoAdjustTextSize = false
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    private val textPaint by lazy {
+        Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            textSize = ringCenterTextSize
+            textAlign = Paint.Align.CENTER
+        }
+    }
+
     private val progressPaint by lazy {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             style = Paint.Style.FILL
         }
     }
+
+    var stepChangeListener:((step: Int) -> Unit)? = null
 
     init {
         context.obtainStyledAttributes(attrs, R.styleable.SegmentableStepsView)?.also {
@@ -195,6 +245,10 @@ class SegmentableStepsView @JvmOverloads constructor(
             ringCenterImage =
                 it.getDrawable(R.styleable.SegmentableStepsView_step_ring_center_image)
             ringCenterText = it.getString(R.styleable.SegmentableStepsView_step_ring_center_text)
+            ringCenterTextColor = it.getColor(R.styleable.SegmentableStepsView_step_ring_center_textColor, Color.BLACK)
+            ringCenterTextSize = it.getDimension(R.styleable.SegmentableStepsView_step_ring_center_textSize, 20f)
+            ringCenterTextStyle = it.getInt(R.styleable.SegmentableStepsView_step_ring_center_textStyle, TEXT_STYLE_NORMAL)
+            ringAutoAdjustTextSize = it.getBoolean(R.styleable.SegmentableStepsView_step_ring_auto_adjust_textSize, false)
         }.recycle()
     }
 
@@ -290,7 +344,8 @@ class SegmentableStepsView @JvmOverloads constructor(
                 )
                 ringCenterImage?.let { img ->
                     canvas?.drawBitmap(
-                        img.toBitmap(), Rect(0, 0, img.intrinsicWidth, img.intrinsicHeight),
+                        img.toBitmap().toCircle(),
+                        Rect(0, 0, img.intrinsicWidth, img.intrinsicHeight),
                         Rect(
                             paddingStart + stepStrokeWidth.toInt(),
                             paddingTop + stepStrokeWidth.toInt(),
@@ -301,7 +356,25 @@ class SegmentableStepsView @JvmOverloads constructor(
                         }
                     )
                 }
-
+                ringCenterText?.let { text ->
+                    var textWidth = textPaint.measureText(text)
+//                    val textRect = Rect().also { r ->
+//                        textPaint.getTextBounds(text, 0, text.length, r)
+//                    }
+                    val maxRect = RectF(paddingStart+stepStrokeWidth, paddingTop+stepStrokeWidth, paddingStart+stepOutsideRadius+stepInsideRadius, paddingTop+stepOutsideRadius+stepInsideRadius)
+//                    "width".logE("txtW1:$textWidth, txtW2:${textRect.width()}, maxW:${maxRect.width()}")
+                    if (maxRect.width() >= textWidth) {
+                        val fontMetrics = textPaint.fontMetrics
+                        val x = paddingStart + stepOutsideRadius - stepInsideRadius / 2
+                        val y =
+                            paddingTop + stepOutsideRadius + (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
+                        canvas?.drawText(text, maxRect.centerX(), y, textPaint)
+                    } else if (ringAutoAdjustTextSize) {
+                        ringCenterTextSize--
+                    } else {
+                        ringCenterText = text.substring(0, text.length-1)
+                    }
+                }
             }
             else -> {
                 val cx = paddingStart + stepOutsideRadius
@@ -382,6 +455,26 @@ class SegmentableStepsView @JvmOverloads constructor(
         }
     }
 
-    private fun getRadius(lt: Float = 0f, rt: Float = 0f, rb: Float = 0f, lb: Float = 0f) =
-        floatArrayOf(lt, lt, rt, rt, rb, rb, lb, lb)
+    private fun Drawable.toBitmap(): Bitmap {
+        val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, if (opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
+        setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        draw(Canvas(bitmap))
+        return bitmap
+//        return toBitmap(intrinsicWidth, intrinsicHeight, if (opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
+    }
+
+    private fun Bitmap.toCircle() = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).let {
+        Canvas(it).also { canvas ->
+            Paint(Paint.ANTI_ALIAS_FLAG).also { paint ->
+                paint.color = Color.WHITE
+                canvas.drawARGB(0, 0 , 0, 0)
+                val rect = Rect(0, 0, width, height)
+                canvas.drawOval(RectF(rect), paint)
+                paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+                canvas.drawBitmap(this, rect, rect, paint)
+            }
+        }
+        it
+    }
+
 }

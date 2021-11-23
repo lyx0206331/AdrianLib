@@ -1,12 +1,12 @@
 package com.adrian.commlib.util
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.PixelFormat
+import android.content.res.Resources
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.graphics.drawable.toBitmap
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 //                       _ooOoo_
@@ -94,5 +94,27 @@ object ImageUtil {
         draw(Canvas(bitmap))
         return bitmap
 //        return toBitmap(intrinsicWidth, intrinsicHeight, if (opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565)
+    }
+
+    fun Bitmap.toDrawable(res: Resources) = BitmapDrawable(res, this)
+
+    fun Bitmap.toByteArray() = ByteArrayOutputStream().also {
+        this.compress(Bitmap.CompressFormat.PNG, 100, it)
+    }.toByteArray()
+
+    fun ByteArray.toBitmap() = if (this.isNotEmpty()) BitmapFactory.decodeByteArray(this, 0, size) else null
+
+    fun Bitmap.toCircle() = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).let {
+        Canvas(it).also { canvas ->
+            Paint(Paint.ANTI_ALIAS_FLAG).also { paint ->
+                paint.color = Color.WHITE
+                canvas.drawARGB(0, 0 , 0, 0)
+                val rect = Rect(0, 0, width, height)
+                canvas.drawOval(RectF(rect), paint)
+                paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+                canvas.drawBitmap(this, rect, rect, paint)
+            }
+        }
+        it
     }
 }
