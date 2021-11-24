@@ -2,12 +2,17 @@ package com.adrian.commonlib
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.SeekBar
 import com.adrian.commlib.util.getDeviceBrand
 import com.adrian.commlib.util.getSystemModel
+import com.adrian.commlib.util.logE
 import com.adrian.commlib.view.SegmentableStepsView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private var isAdd = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -22,12 +27,45 @@ class MainActivity : AppCompatActivity() {
                 else -> SegmentableStepsView.STYLE_LINE_HORIZONTAL
             }
         }
-        btnIncrease.text = "递增(${segmentableStepsView.stepIndex})"
-        btnIncrease.setOnClickListener {
-            if (++segmentableStepsView.stepIndex > segmentableStepsView.maxSteps) {
-                segmentableStepsView.stepIndex = 0
+        seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                "Step".logE("current progress:$progress")
+                segmentableStepsView.stepIndex = progress
             }
-            btnIncrease.text = "递增(${segmentableStepsView.stepIndex})"
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+        })
+        segmentableStepsView.maxSteps = seekbar.max
+        segmentableStepsView.stepIndex = seekbar.progress
+        segmentableStepsView.stepChangeListener = { step ->
+            "Step".logE("current step:$step")
+            if (step == 0) {
+                segmentableStepsView.ringCenterText = "步骤(0)"
+            } else {
+                if (isAdd) {
+                    segmentableStepsView.ringCenterText += "步骤(${step})"
+                } else {
+                    val string = segmentableStepsView.ringCenterText
+                    val index = string?.indexOf("步骤(${step+1})".also { "Data".logE("delete content:$it") }).also { "Data".logE("delete index:$it") }
+                    if (index!! > 0) {
+                        segmentableStepsView.ringCenterText = string?.substring(0, index)
+                    }
+                }
+            }
         }
+        btnIncrease.setOnClickListener {
+            isAdd = true
+            seekbar.progress++
+        }
+        btnDecrease.setOnClickListener {
+            isAdd = false
+            seekbar.progress--
+        }
+        seekbar.progress = 4
     }
 }

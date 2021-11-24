@@ -87,7 +87,7 @@ class SegmentableStepsView @JvmOverloads constructor(
     //当前步骤数
     var stepIndex = 3
         set(value) {
-            field = if (value < 0) 0 else value
+            field = if (value < 0) 0 else if (value > maxSteps) maxSteps else value
             stepChangeListener?.invoke(field)
             invalidate()
         }
@@ -165,7 +165,7 @@ class SegmentableStepsView @JvmOverloads constructor(
             invalidate()
         }
 
-    //环状时居中文字大小
+    //环状时居中文字大小,当设置为可自动调节时，为最大字体
     var ringCenterTextSize = 20f
         set(value) {
             field = value
@@ -357,7 +357,7 @@ class SegmentableStepsView @JvmOverloads constructor(
                     )
                 }
                 ringCenterText?.let { text ->
-                    var textWidth = textPaint.measureText(text)
+                    var textWidth = textPaint.apply { textSize = ringCenterTextSize }.measureText(text)
 //                    val textRect = Rect().also { r ->
 //                        textPaint.getTextBounds(text, 0, text.length, r)
 //                    }
@@ -370,7 +370,15 @@ class SegmentableStepsView @JvmOverloads constructor(
                             paddingTop + stepOutsideRadius + (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
                         canvas?.drawText(text, maxRect.centerX(), y, textPaint)
                     } else if (ringAutoAdjustTextSize) {
-                        ringCenterTextSize--
+                        var tmp = ringCenterTextSize
+                        do {
+                            --tmp
+                        } while (textPaint.apply { textSize = tmp }.measureText(text)>maxRect.width())
+                        val fontMetrics = textPaint.fontMetrics
+                        val x = paddingStart + stepOutsideRadius - stepInsideRadius / 2
+                        val y =
+                            paddingTop + stepOutsideRadius + (fontMetrics.descent - fontMetrics.ascent) / 2 - fontMetrics.descent
+                        canvas?.drawText(text, maxRect.centerX(), y, textPaint)
                     } else {
                         ringCenterText = text.substring(0, text.length-1)
                     }
@@ -388,7 +396,7 @@ class SegmentableStepsView @JvmOverloads constructor(
         }
 
         if (stepIndex > 0) {
-            stepIndex = min(stepIndex, maxSteps)
+//            stepIndex = min(stepIndex, maxSteps)
             val validW = width.toFloat() - paddingLeft - paddingRight
             val validH = height.toFloat() - paddingTop - paddingBottom
             for (index in 1..stepIndex) {
