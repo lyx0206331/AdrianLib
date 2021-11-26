@@ -5,8 +5,7 @@ import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.IntDef
-import androidx.annotation.Nullable
+import androidx.annotation.*
 import com.adrian.commlib.R
 import com.adrian.commlib.util.logE
 import kotlin.math.max
@@ -101,6 +100,7 @@ class SegmentableStepsView @JvmOverloads constructor(
         }
 
     //步骤背景颜色
+    @ColorInt
     var stepBgColor = Color.GRAY
         set(value) {
             field = value
@@ -108,6 +108,7 @@ class SegmentableStepsView @JvmOverloads constructor(
         }
 
     //圆环时中间部分颜色
+    @ColorInt
     var stepRingCenterColor = Color.TRANSPARENT
         set(value) {
             field = value
@@ -122,6 +123,7 @@ class SegmentableStepsView @JvmOverloads constructor(
 //        }
 
     //环形或者圆形时外半径
+    @Dimension
     var stepOutsideRadius = 10f
         set(value) {
             field = value
@@ -131,9 +133,11 @@ class SegmentableStepsView @JvmOverloads constructor(
         }
 
     //环形内半径
+    @Dimension
     private var stepInsideRadius = 5f
 
     //宽度
+    @Dimension
     var stepStrokeWidth = 5f
         set(value) {
             field = if (value > 0) value else 1f
@@ -166,6 +170,7 @@ class SegmentableStepsView @JvmOverloads constructor(
         }
 
     //环状时居中文字大小,当设置为可自动调节时，为最大字体
+    @Dimension
     var ringCenterTextSize = 20f
         set(value) {
             field = value
@@ -174,6 +179,7 @@ class SegmentableStepsView @JvmOverloads constructor(
         }
 
     //环状时居中文字颜色
+    @ColorInt
     var ringCenterTextColor = Color.BLACK
         set(value) {
             field = value
@@ -186,7 +192,7 @@ class SegmentableStepsView @JvmOverloads constructor(
     var ringCenterTextStyle = TEXT_STYLE_NORMAL
         set(value) {
             field = value
-            textPaint.isFakeBoldText = true
+            textPaint.typeface = Typeface.defaultFromStyle(field)
             invalidate()
         }
 

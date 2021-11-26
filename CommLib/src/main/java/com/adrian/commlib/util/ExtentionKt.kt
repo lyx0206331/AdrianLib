@@ -2,6 +2,7 @@ package com.adrian.commlib.util
 
 import android.content.Context
 import android.os.Build
+import android.text.Editable
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.ColorRes
@@ -108,7 +109,7 @@ fun Context.getVersionCode(): Int = packageManager.getPackageInfo(packageName, 0
  */
 fun Context.getVersionName(): String = packageManager.getPackageInfo(packageName, 0).versionName
 
-fun Context.getColor1(@ColorRes colorId: Int) = ContextCompat.getColor(this, colorId)
+fun Context.getColor(@ColorRes colorId: Int) = ContextCompat.getColor(this, colorId)
 
 /**
  * 格式化日期字符串
@@ -485,3 +486,5 @@ fun String?.isMacString() =
     else {
         Pattern.compile("[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}").matcher(this).matches()
     }
+
+fun String.toEditable() = Editable.Factory.getInstance().newEditable(this)
