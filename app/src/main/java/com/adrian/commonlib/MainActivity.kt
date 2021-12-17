@@ -3,9 +3,7 @@ package com.adrian.commonlib
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SeekBar
-import com.adrian.commlib.util.getDeviceBrand
-import com.adrian.commlib.util.getSystemModel
-import com.adrian.commlib.util.logE
+import com.adrian.commlib.util.*
 import com.adrian.commlib.view.SegmentableStepsView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -67,5 +65,20 @@ class MainActivity : AppCompatActivity() {
             seekbar.progress--
         }
         seekbar.progress = 4
+
+        val fValue = 1.56f
+        val fBytes = byteArrayOf(20, -82, -57, 63)
+        tvFloat2BytesLE.text = "LE:Float -> Bytes:$fValue -> ${fValue.toByteArrayLE().contentToString()}"
+        tvBytes2FloatLE.text = "LE:Bytes -> Float:${fBytes.contentToString()} -> ${fBytes.toFloatLE()}"
+        tvFloat2BytesBE.text = "BE:Float -> Bytes:$fValue -> ${fValue.toByteArrayBE().contentToString()}"
+        fBytes.reverse()
+        tvBytes2FloatBE.text = "BE:Bytes -> Float:${fBytes.contentToString()} -> ${fBytes.toFloatBE()}"
+        val dValue = 1.56
+        val dBytes = byteArrayOf(-10, 40, 92, -113, -62, -11, -8, 63)
+        tvDouble2BytesLE.text = "LE:Double -> Bytes:$dValue -> ${dValue.toByteArrayLE().contentToString()}"
+        tvBytes2DoubleLE.text = "LE:Bytes -> Double:${dBytes.contentToString()} -> ${dBytes.toDoubleLE()}"
+        tvDouble2BytesBE.text = "BE:Double -> Bytes:$dValue -> ${dValue.toByteArrayBE().contentToString()}"
+        dBytes.reverse()
+        tvBytes2DoubleBE.text = "BE:Bytes -> Double:${dBytes.contentToString()} -> ${dBytes.toDoubleBE()}"
     }
 }
