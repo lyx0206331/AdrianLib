@@ -186,14 +186,14 @@ fun Int.toByteArrayLE(): ByteArray =
 /**
  * 大端模式下，字节数组转Float
  */
-fun ByteArray.toFloatBE(offset: Int = 0, length: Int = this.size) =
-    ByteBuffer.wrap(this, offset, length).order(ByteOrder.BIG_ENDIAN).float
+fun ByteArray.toFloatBE(offset: Int = 0) =
+    ByteBuffer.wrap(this, offset, 4).order(ByteOrder.BIG_ENDIAN).float
 
 /**
  * 小端模式下，字节数组转Float
  */
-fun ByteArray.toFloatLE(offset: Int = 0, length: Int = this.size) =
-    ByteBuffer.wrap(this, offset, length).order(ByteOrder.LITTLE_ENDIAN).float
+fun ByteArray.toFloatLE(offset: Int = 0) =
+    ByteBuffer.wrap(this, offset, 4).order(ByteOrder.LITTLE_ENDIAN).float
 
 /**
  * 大端模式下，Float转字节数组
@@ -236,14 +236,14 @@ fun Long.toByteArrayLE(): ByteArray =
 /**
  * 大端模式下，字节数组转Double
  */
-fun ByteArray.toDoubleBE(offset: Int = 0, length: Int = this.size) =
-    ByteBuffer.wrap(this, offset, length).order(ByteOrder.BIG_ENDIAN).double
+fun ByteArray.toDoubleBE(offset: Int = 0) =
+    ByteBuffer.wrap(this, offset, 8).order(ByteOrder.BIG_ENDIAN).double
 
 /**
  * 小端模式下，字节数组转Double
  */
-fun ByteArray.toDoubleLE(offset: Int = 0, length: Int = this.size) =
-    ByteBuffer.wrap(this, offset, length).order(ByteOrder.LITTLE_ENDIAN).double
+fun ByteArray.toDoubleLE(offset: Int = 0) =
+    ByteBuffer.wrap(this, offset, 8).order(ByteOrder.LITTLE_ENDIAN).double
 
 /**
  * 大端模式下，Double转字节数组
