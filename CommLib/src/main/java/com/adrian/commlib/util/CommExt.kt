@@ -92,28 +92,6 @@ fun String.logW(msg: String, tr: Throwable? = null, isForce: Boolean = false) =
 fun String.logI(msg: String, tr: Throwable? = null, isForce: Boolean = false) =
     if (BuildConfig.DEBUG || isForce) Log.i(this, msg, tr) else 0
 
-fun Context.showShortToast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-
-fun Context.showLongToast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-
-fun Context.showShortToast(@StringRes resId: Int) =
-    Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
-
-fun Context.showLongToast(@StringRes resId: Int) =
-    Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
-
-/**
- * 获取版本码
- */
-fun Context.getVersionCode(): Int = packageManager.getPackageInfo(packageName, 0).versionCode
-
-/**
- * 获取版本号
- */
-fun Context.getVersionName(): String = packageManager.getPackageInfo(packageName, 0).versionName
-
-fun Context.getColor(@ColorRes colorId: Int) = ContextCompat.getColor(this, colorId)
-
 /**
  * 格式化日期字符串
  */

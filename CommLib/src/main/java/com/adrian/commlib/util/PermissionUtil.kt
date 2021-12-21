@@ -53,7 +53,7 @@ class PermissionUtil constructor(private val activity: Activity) {
                     field.add(it)
                 }
             }
-            CommUtil.logE("lackPermission", field.toString())
+            "lackPermission".logE(field.toString())
             return field
         }
 
@@ -102,12 +102,12 @@ class PermissionUtil constructor(private val activity: Activity) {
                 grantResults.forEachIndexed { index, i ->
                     val permission = permissions[index]
                     if (i != PackageManager.PERMISSION_GRANTED) {
-                        CommUtil.toastShort(activity, "请求${permission}授权被拒绝")
+                        activity.showShortToast("请求${permission}授权被拒绝")
 //                            goToSetting()
-                        CommUtil.logE("req permission", "----------------")
+                        "req permission".logE("----------------")
                         return@forEachIndexed
                     } else {
-                        CommUtil.toastShort(activity, "${permission}已授权")
+                        activity.showShortToast("${permission}已授权")
                     }
                 }
                 if (lackPermissons.size > 0) {

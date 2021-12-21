@@ -80,5 +80,14 @@ class MainActivity : AppCompatActivity() {
         tvDouble2BytesBE.text = "BE:Double -> Bytes:$dValue -> ${dValue.toByteArrayBE().contentToString()}"
         dBytes.reverse()
         tvBytes2DoubleBE.text = "BE:Bytes -> Double:${dBytes.contentToString()} -> ${dBytes.toDoubleBE()}"
+
+        var entryIndex = 0
+        btnSwichEntry.setOnClickListener {
+            when(entryIndex++%3) {
+                0 -> changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 0)
+                1 -> changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 1)
+                else -> changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 2)
+            }
+        }
     }
 }
