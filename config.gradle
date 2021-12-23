@@ -138,6 +138,7 @@ ext {
 
             changelog               : 'de.cketti.library.changelog:ckchangelog:' + CHANGELOG_VERSION,
 
+            // https://github.com/Tencent/mars
             // for a sample or demo
             marsWrapper             : 'com.tencent.mars:mars-wrapper:' + MARS_VERSION,
             // for app
