@@ -1,4 +1,4 @@
-package com.adrian.commonlib
+package com.adrian.test
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -67,27 +67,28 @@ class MainActivity : AppCompatActivity() {
         seekbar.progress = 4
 
         val fValue = 1.56f
+        val dValue = -1.56
+        val iValue = 1
+        val iValueN = -iValue
         val fBytes = byteArrayOf(20, -82, -57, 63)
-        tvFloat2BytesLE.text = "LE:Float -> Bytes:$fValue -> ${fValue.toByteArrayLE().contentToString()}"
-        tvBytes2FloatLE.text = "LE:Bytes -> Float:${fBytes.contentToString()} -> ${fBytes.toFloatLE()}"
-        tvFloat2BytesBE.text = "BE:Float -> Bytes:$fValue -> ${fValue.toByteArrayBE().contentToString()}"
+        tvInt2Bytes.text = "LE:Int -> Bytes:$iValue -> ${iValue.toByteArrayLE().contentToString()}\n" +
+                "LE:Int -> Bytes:$iValueN -> ${iValueN.toByteArrayLE().contentToString()}\n" +
+                "Signed -> UnSigned:$iValueN -> ${iValueN.toUInt()}\n" +
+                "LE:Float -> Bytes:$fValue -> ${fValue.toByteArrayLE().contentToString()}\n" +
+                "LE:Bytes -> Float:${fBytes.contentToString()} -> ${fBytes.toFloatLE()}\n" +
+                "BE:Float -> Bytes:$fValue -> ${fValue.toByteArrayBE().contentToString()}"
         fBytes.reverse()
-        tvBytes2FloatBE.text = "BE:Bytes -> Float:${fBytes.contentToString()} -> ${fBytes.toFloatBE()}"
-        val dValue = 1.56
-        val dBytes = byteArrayOf(-10, 40, 92, -113, -62, -11, -8, 63)
-        tvDouble2BytesLE.text = "LE:Double -> Bytes:$dValue -> ${dValue.toByteArrayLE().contentToString()}"
-        tvBytes2DoubleLE.text = "LE:Bytes -> Double:${dBytes.contentToString()} -> ${dBytes.toDoubleLE()}"
-        tvDouble2BytesBE.text = "BE:Double -> Bytes:$dValue -> ${dValue.toByteArrayBE().contentToString()}"
+        tvInt2Bytes.append("\nBE:Bytes -> Float:${fBytes.contentToString()} -> ${fBytes.toFloatBE()}")
+        val dBytes = byteArrayOf(-10, 40, 92, -113, -62, -11, -8, -65)
+        tvInt2Bytes.append("\nLE:Double -> Bytes:$dValue -> ${dValue.toByteArrayLE().contentToString()}")
+        tvInt2Bytes.append("\nLE:Bytes -> Double:${dBytes.contentToString()} -> ${dBytes.toDoubleLE()}")
+        tvInt2Bytes.append("\nBE:Double -> Bytes:$dValue -> ${dValue.toByteArrayBE().contentToString()}")
         dBytes.reverse()
-        tvBytes2DoubleBE.text = "BE:Bytes -> Double:${dBytes.contentToString()} -> ${dBytes.toDoubleBE()}"
+        tvInt2Bytes.append("\nBE:Bytes -> Double:${dBytes.contentToString()} -> ${dBytes.toDoubleBE()}")
 
-        var entryIndex = 0
+        changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 0)
         btnSwichEntry.setOnClickListener {
-            when(entryIndex++%3) {
-                0 -> changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 0)
-                1 -> changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 1)
-                else -> changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 2)
-            }
+                changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 0)
         }
     }
 }

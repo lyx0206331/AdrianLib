@@ -1,4 +1,4 @@
-package com.adrian.commonlib
+package com.adrian.test
 
 import org.junit.Test
 
