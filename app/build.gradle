@@ -23,10 +23,51 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        /*debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }*/
     }
+
+    // Specifies one flavor dimension.
+    /*flavorDimensions "mode", "api"
+    productFlavors {
+        free {
+            // Assigns this product flavor to the "version" flavor dimension.
+            // If you are using only one dimension, this property is optional,
+            // and the plugin automatically assigns all the module's flavors to
+            // that dimension.
+            dimension "mode"
+            applicationIdSuffix ".free"
+            versionNameSuffix "-free"
+        }
+        pro {
+            dimension "mode"
+            applicationIdSuffix ".pro"
+            versionNameSuffix "-pro"
+        }
+        common {
+            dimension "api"
+            applicationIdSuffix ".common"
+            versionNameSuffix "-common"
+        }
+    }
+
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        // To check for a certain build type, use variant.buildType.name == "<buildType>"
+        if (names.contains("pro") && names.contains("common")) {
+            // Gradle ignores any variants that satisfy the conditions above.
+            setIgnore(true)
+        }
+    }*/
+
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -43,16 +84,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-
-    //    implementation rootProject.ext.dependencies.coroutinesJDK8
-
-//    def splitties_version = '3.0.0-beta03'
-//    implementation "com.louiscad.splitties:splitties-fun-pack-android-base:$splitties_version"
-//    implementation "com.louiscad.splitties:splitties-fun-pack-android-base-with-views-dsl:$splitties_version"
-//    implementation "com.louiscad.splitties:splitties-fun-pack-android-appcompat:$splitties_version"
-//    implementation "com.louiscad.splitties:splitties-fun-pack-android-appcompat-with-views-dsl:$splitties_version"
-//    implementation "com.louiscad.splitties:splitties-fun-pack-android-material-components:$splitties_version"
-//    implementation "com.louiscad.splitties:splitties-fun-pack-android-material-components:$splitties_version"
 
     implementation project(path: ':CommLib')
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2-native-mt'

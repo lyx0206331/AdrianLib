@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.Settings
+import android.util.TypedValue
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
@@ -106,3 +107,9 @@ fun Activity.changeEntry(entryActNames: Array<String>, entryIndex: Int = 0) {
         }
     }
 }
+
+fun Context.dp2px(dp: Int): Float = resources.displayMetrics.density * dp
+
+fun Context.getThemePrimaryColor(): Int = TypedValue().also {
+    this.theme.resolveAttribute(android.R.attr.colorPrimary, it, true)
+}.data
