@@ -33,15 +33,15 @@ import androidx.appcompat.widget.SwitchCompat
  * Date:2021/12/21 5:15 下午
  * Description:
  */
-internal infix fun SwitchCompat.onCheckedChanged(function: (CompoundButton, Boolean) -> Unit) {
+infix fun SwitchCompat.onCheckedChanged(function: (CompoundButton, Boolean) -> Unit) {
     setOnCheckedChangeListener(function)
 }
 
-internal infix fun View.onClick(function: () -> Unit) {
-    setOnClickListener { function() }
+infix fun View.onClick(function: (view: View) -> Unit) {
+    setOnClickListener { function(it) }
 }
 
-internal infix fun SeekBar.onProgressChanged(block: (seekBar: SeekBar, progress: Int, fromUser: Boolean) -> Unit) {
+infix fun SeekBar.onProgressChanged(block: (seekBar: SeekBar, progress: Int, fromUser: Boolean) -> Unit) {
     setOnSeekBarChangeListener(object : OnSeekBarProgressChanged() {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
             block(seekBar, progress, fromUser)
@@ -54,7 +54,7 @@ internal infix fun SeekBar.onProgressChanged(block: (seekBar: SeekBar, progress:
  *
  * @param scrollable
  */
-internal infix fun TextView.isScrollable(scrollable: Boolean) {
+infix fun TextView.isScrollable(scrollable: Boolean) {
     movementMethod = if (scrollable) ScrollingMovementMethod.getInstance() else null
 }
 
@@ -62,7 +62,7 @@ internal infix fun TextView.isScrollable(scrollable: Boolean) {
  * TextView滚动到最后一行
  *
  */
-internal fun TextView.scroll2LastLine() {
+fun TextView.scroll2LastLine() {
     val offset = this.lineCount * this.lineHeight
     if (offset > this.height) {
         this.scrollTo(0, offset - height)
@@ -88,7 +88,7 @@ fun View.setOnRepeatClickListener(validTimes: Int = 2, interval: Int = 500, list
     var clickCount = 0
     var lastClickTime = 0L
 
-    setOnClickListener {
+    onClick {
         if (this.id != lastViewId) {
             clickCount = 0
             lastViewId = this.id
