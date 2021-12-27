@@ -88,7 +88,23 @@ class MainActivity : AppCompatActivity() {
 
         changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 0)
         btnSwichEntry.setOnClickListener {
-                changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 0)
+            changeEntry(arrayOf("MainActivity", "Entry1", "Entry2"), 0)
+        }
+
+        btnDoubleClick.setOnDoubleClickListener {
+            "RepeatedClick".logE("Double Click!")
+        }
+
+        btnTripleClick.setOnTripleClickListener {
+            "RepeatedClick".logE("Triple Click!")
+        }
+
+        btnQuadrupleClick.setOnQuadrupleClickListener {
+            "RepeatedClick".logE("Quadruple Click!")
+        }
+
+        btnPentaClick.setOnPentaClickListener {
+            "RepeatedClick".logE("Penta Click!")
         }
     }
 }

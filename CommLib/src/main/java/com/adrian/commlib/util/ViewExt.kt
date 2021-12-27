@@ -1,8 +1,5 @@
 package com.adrian.commlib.util
 
-import android.content.Context
-import android.content.Intent
-import android.provider.Settings
 import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.widget.CompoundButton
@@ -76,4 +73,70 @@ abstract class OnSeekBarProgressChanged: SeekBar.OnSeekBarChangeListener {
     override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+}
+
+/**
+ * 重复点击响应监听
+ * 注：由于采用setOnClickListener()方法实现,所以会与此方法冲突,慎用!!!
+ * @param validTimes 有效点击次数
+ * @param interval 有效时间间隔
+ * @param listener 点击响应监听器
+ */
+fun View.setOnRepeatClickListener(validTimes: Int = 2, interval: Int = 500, listener: (view: View) -> Unit) {
+
+    var lastViewId = 0
+    var clickCount = 0
+    var lastClickTime = 0L
+
+    setOnClickListener {
+        if (this.id != lastViewId) {
+            clickCount = 0
+            lastViewId = this.id
+            lastClickTime = 0L
+        }
+        val curMillis = System.currentTimeMillis()
+        if (curMillis - lastClickTime <= interval) {
+            clickCount++
+        } else {
+            clickCount = 0
+        }
+        lastClickTime = curMillis
+        if (clickCount == validTimes-1) {
+            listener.invoke(it)
+        }
+    }
+}
+
+/**
+ * 双击响应监听
+ * 注：由于采用setOnClickListener()方法实现,所以会与此方法冲突,慎用!!!
+ */
+fun View.setOnDoubleClickListener(listener: (view: View) -> Unit) {
+    setOnRepeatClickListener {
+        listener.invoke(it)
+    }
+}
+
+/**
+ * 三击响应监听
+ * 注：由于采用setOnClickListener()方法实现,所以会与此方法冲突,慎用!!!
+ */
+fun View.setOnTripleClickListener(listener: (view: View) -> Unit) {
+    setOnRepeatClickListener(3, listener = listener)
+}
+
+/**
+ * 四击响应监听
+ * 注：由于采用setOnClickListener()方法实现,所以会与此方法冲突,慎用!!!
+ */
+fun View.setOnQuadrupleClickListener(listener: (view: View) -> Unit) {
+    setOnRepeatClickListener(4, listener = listener)
+}
+
+/**
+ * 五击响应监听
+ * 注：由于采用setOnClickListener()方法实现,所以会与此方法冲突,慎用!!!
+ */
+fun View.setOnPentaClickListener(listener: (view: View) -> Unit) {
+    setOnRepeatClickListener(5, listener = listener)
 }
