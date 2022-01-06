@@ -113,6 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="双击"
+            android:textSize="11sp"
             app:layout_constraintEnd_toStartOf="@id/btnTripleClick"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnSwichEntry" />
@@ -122,33 +123,44 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
             android:text="三击"
+            android:textSize="11sp"
             app:layout_constraintEnd_toStartOf="@id/btnQuadrupleClick"
             app:layout_constraintStart_toEndOf="@id/btnDoubleClick"
-            app:layout_constraintTop_toBottomOf="@id/btnSwichEntry" />
+            app:layout_constraintTop_toTopOf="@id/btnDoubleClick" />
 
         <Button
             android:id="@+id/btnQuadrupleClick"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
             android:text="四击"
+            android:textSize="11sp"
             app:layout_constraintEnd_toStartOf="@id/btnPentaClick"
             app:layout_constraintStart_toEndOf="@id/btnTripleClick"
-            app:layout_constraintTop_toBottomOf="@id/btnSwichEntry" />
+            app:layout_constraintTop_toTopOf="@id/btnDoubleClick" />
 
         <Button
             android:id="@+id/btnPentaClick"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
             android:text="五击"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toStartOf="@id/btnDisrepeatClick"
             app:layout_constraintStart_toEndOf="@id/btnQuadrupleClick"
-            app:layout_constraintTop_toBottomOf="@id/btnSwichEntry" />
+            app:layout_constraintTop_toTopOf="@id/btnDoubleClick" />
+
+        <Button
+            android:id="@+id/btnDisrepeatClick"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="禁连击"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnPentaClick"
+            app:layout_constraintTop_toTopOf="@id/btnDoubleClick" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

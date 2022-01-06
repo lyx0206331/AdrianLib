@@ -108,5 +108,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnPentaClick.setOnPentaClickListener {
             "RepeatedClick".logE("Penta Click!")
         }
+
+        binding.btnDisrepeatClick.setOnDisrepeatableClickListener {
+            "DisrepeatClick".logE("Valid Click")
+        }
     }
 }

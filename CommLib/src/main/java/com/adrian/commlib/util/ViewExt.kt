@@ -76,6 +76,27 @@ abstract class OnSeekBarProgressChanged: SeekBar.OnSeekBarChangeListener {
 }
 
 /**
+ * 防止重复点击监听
+ * @param interval 禁连击时长
+ * @param clickListener 有效监听
+ */
+fun View.setOnDisrepeatableClickListener(interval: Int = 500, clickListener: (view: View) -> Unit) {
+    var clickCount = 0
+    var lastClickTime = 0L
+    onClick {
+        val curMillis = System.currentTimeMillis()
+        if (curMillis - lastClickTime > interval) {
+            clickCount = 0
+            clickListener.invoke(this)
+        } else {
+            clickCount++
+            "重复点击".logE("repeat count:$clickCount")
+        }
+        lastClickTime = curMillis
+    }
+}
+
+/**
  * 重复点击响应监听
  * 注：由于采用setOnClickListener()方法实现,所以会与此方法冲突,慎用!!!
  * @param validTimes 有效点击次数
