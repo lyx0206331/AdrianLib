@@ -58,6 +58,8 @@ ext {
     def ALIBABA_AROUTER_COMPILER_VERSION = "1.2.2"
     def ALIBABA_FASTJSON_VERSION = "1.2.48"
 
+    def GSON_VERSION = "2.8.9"
+
     def MP_ANDROID_CHART_VERSION = "3.1.0"
 
     def UMSDK_ASMS_VERSION = "1.1.3"
@@ -69,6 +71,11 @@ ext {
     def COROUTINES_VERSION = "1.5.1"
 
     def MARS_VERSION = "1.2.5"
+
+    def RETROFIT2_VERSION = "2.9.0"
+    def RXJAVA2_VERSION = "2.2.2"
+    def RXJAVA2_ANDROID_VERSION = "2.1.0"
+    def OKHTTP_VERSION = "4.9.3"
 
     dependencies = [
             androidJUnit            : 'junit:junit:' + JUNIT_VERSION,
@@ -126,6 +133,7 @@ ext {
             androidXDynamicAnimationJava: 'androidx.dynamicanimation:dynamicanimation:' + X_DYNAMIC_ANIMATION_VERSION,
             androidXDynamicAnimationKtx : 'androidx.dynamicanimation:dynamicanimation-ktx:' + X_DYNAMIC_ANIMATION_VERSION,
 
+            // 已过时
             ankoAll                 : 'org.jetbrains.anko:anko:' + ANKO_VERSION,
 
             coroutinesCore          : 'org.jetbrains.kotlinx:kotlinx-coroutines-core:' + COROUTINES_VERSION,
@@ -135,6 +143,8 @@ ext {
             alibabaArouterApi       : 'com.alibaba:arouter-api:' + ALIBABA_AROUTER_API_VERSION,
             alibabaArouterCompiler  : 'com.alibaba:arouter-compiler:' + ALIBABA_AROUTER_COMPILER_VERSION,
             alibabaFastjson         : 'com.alibaba:fastjson:' + ALIBABA_FASTJSON_VERSION,
+
+            gson                    : 'com.google.code.gson:gson:' + GSON_VERSION,
 
             MPAndroidChart          : 'com.github.PhilJay:MPAndroidChart:v' + MP_ANDROID_CHART_VERSION,
 
@@ -150,6 +160,15 @@ ext {
             // for app
             marsCore                : 'com.tencent.mars:mars-core:' + MARS_VERSION,
             // xlog is included in mars-core and mars-wrapper
-            marsXlog                : 'com.tencent.mars:mars-xlog:' + MARS_VERSION
+            marsXlog                : 'com.tencent.mars:mars-xlog:' + MARS_VERSION,
+            // retrofit2
+            retrofit2               : 'com.squareup.retrofit2:retrofit:' + RETROFIT2_VERSION,
+
+            //Using RxJava 2.0 Library in your application
+            rxJava2                 : 'io.reactivex.rxjava2:rxjava:' + RXJAVA2_VERSION,
+            //If you are using RxAndroid also, then add the following
+            rxJava2Android          : 'io.reactivex.rxjava2:rxandroid:' + RXJAVA2_ANDROID_VERSION,
+
+            okHttp                  : 'com.squareup.okhttp3:okhttp:' + OKHTTP_VERSION
     ]
 }
