@@ -76,6 +76,7 @@ ext {
     def RXJAVA2_VERSION = "2.2.2"
     def RXJAVA2_ANDROID_VERSION = "2.1.0"
     def OKHTTP_VERSION = "4.9.3"
+    def OKIO_VERSION = "3.0.0"
 
     dependencies = [
             androidJUnit            : 'junit:junit:' + JUNIT_VERSION,
@@ -163,12 +164,17 @@ ext {
             marsXlog                : 'com.tencent.mars:mars-xlog:' + MARS_VERSION,
             // retrofit2
             retrofit2               : 'com.squareup.retrofit2:retrofit:' + RETROFIT2_VERSION,
+            okHttp                  : 'com.squareup.okhttp3:okhttp:' + OKHTTP_VERSION,
+
+            //repositories {
+            //    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            //}
+            okio                    : 'com.squareup.okio:okio:' + OKIO_VERSION,
+
 
             //Using RxJava 2.0 Library in your application
             rxJava2                 : 'io.reactivex.rxjava2:rxjava:' + RXJAVA2_VERSION,
             //If you are using RxAndroid also, then add the following
-            rxJava2Android          : 'io.reactivex.rxjava2:rxandroid:' + RXJAVA2_ANDROID_VERSION,
-
-            okHttp                  : 'com.squareup.okhttp3:okhttp:' + OKHTTP_VERSION
+            rxJava2Android          : 'io.reactivex.rxjava2:rxandroid:' + RXJAVA2_ANDROID_VERSION
     ]
 }
