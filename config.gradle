@@ -3,11 +3,11 @@ ext {
     isModule = true
     //applicationId版本好sdkVersion统一管理
     android = [
-            compileSdkVersion           : 30,
+            compileSdkVersion           : 31,
             buildToolsVersion           : "30.0.3",
             applicationId               : "com.adrian.app",
-            minSdkVersion               : 21,
-            targetSdkVersion            : 30,
+            minSdkVersion               : 26,
+            targetSdkVersion            : 31,
             versionCode                 : 1,
             versionName                 : "1.0",
             testInstrumentationRunner   : "androidx.test.runner.AndroidJUnitRunner"
@@ -44,8 +44,8 @@ ext {
     def X_SWIPEREFRESH_LAYOUT_VERSION = "1.1.0"
     def X_VIEW_PAGER_VERSION = "1.0.0"
     def X_WEBKIT_VERSION = "1.1.0"
-    def X_NAV_FRAGMENT_VERSION = "2.3.1"
-    def X_NAV_UI_VERSION = "2.3.1"
+    def X_NAV_FRAGMENT_VERSION = "2.3.5"
+    def X_NAV_UI_VERSION = "2.3.5"
 
     def X_ROOM_VERSION = "2.2.5"
     def X_LIFECYCLE_VERSION = "2.2.0"

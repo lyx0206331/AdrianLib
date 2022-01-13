@@ -42,7 +42,7 @@ class SoundPlayer(val context: Context) {
     /**
      * 音频Raw文件列表
      */
-    var soundRawList = arrayListOf<@androidx.annotation.RawRes Int>()
+    var soundRawList = arrayListOf<Int>()
         set(value) {
             field = value
             soundIds.clear()

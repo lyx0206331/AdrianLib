@@ -13,8 +13,10 @@ import androidx.core.content.ContextCompat
 import com.adrian.commlib.BuildConfig
 import io.netty.buffer.ByteBuf
 import java.io.File
+import java.net.URL
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
@@ -423,3 +425,13 @@ fun String?.isMacString() =
     }
 
 fun String.toEditable() = Editable.Factory.getInstance().newEditable(this)
+
+fun ByteArray.encryptMD5(): ByteArray = MessageDigest.getInstance("MD5").let {
+    it.update(this)
+    it.digest()
+}
+
+fun ByteArray.encodeBase64(): String = Base64.getEncoder().encodeToString(this)
+fun ByteArray.decodeBase64(): ByteArray = Base64.getDecoder().decode(this)
+
+fun String.verifyBase64(source: String) = this.encodeToByteArray().decodeBase64().decodeToString() == source
